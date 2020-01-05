@@ -1,0 +1,21 @@
+{
+  "name": "zooms",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git.ycz123.com:3000/eagle-power-aha/epservices.git"
+  },
+  "keywords": [],
+  "author": "hi.owen.luke@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "kdo": "^1.8.1",
+    "keypaths": "^0.1.4",
+    "removeredundanttabs": "^0.1.1"
+  }
+}
