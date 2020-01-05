@@ -18,7 +18,7 @@ const me = {
 
 		// If it is true, the function list in file "zooms/modules.js" will be compact like below right.
 		// 		s1: {										s1: {
-		//			hi: async function(name, age) {}	=> 		hi(name, age) {}
+		//			hi: function(name, age) {}	=> 				hi(name, age) {}
 		// 		}											}
 		isCompact: false,
 
