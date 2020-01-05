@@ -112,16 +112,7 @@ const parseSourcesApis = (userConfig) => {
 			const filePath = fnPath[apiPath];
 
 			// "^^async function () {}^^"
-			let str = `^^${asyncStr}function(${paramsStr}){require('${filePath}')}^^`;
-
-			if (!userConfig.functionList.isCompact && userConfig.functionList.useArrowFunction) {
-				str = str
-					.replace('function', '')
-					.replace('){require', ') => {require')
-				;
-			}
-
-			return str;
+			return `^^${asyncStr}function(${paramsStr}){require('${filePath}')}^^`;
 		};
 
 		const attachFunctionBodyStr = (obj, parent = '') => {
@@ -168,6 +159,14 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 	// hi: async function (name, age) {} => hi(name, age) {}
 	if (userConfig.functionList.isCompact) {
 		apisStr = apisStr.replace(/\b(\S*?): (async )*function\s*?(?=\()/g, '$2$1')
+	}
+	else {
+		if (userConfig.functionList.useArrowFunction) {
+			apisStr = apisStr
+				.replace(/function/g, '')
+				.replace(/\){require/g, ') => {require')
+			;
+		}
 	}
 
 	// For zooms/modules.js
