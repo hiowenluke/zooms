@@ -1,13 +1,13 @@
 const apis = {
     m1: {
-        about: () => {require('/MyNodeJS/zooms/examples/module1/src/about')},
-        callback: (hi, cb) => {require('/MyNodeJS/zooms/examples/module1/src/callback')},
+        about: function(){require('/MyNodeJS/zooms/examples/module1/src/about')},
+        callback: function(hi, cb){require('/MyNodeJS/zooms/examples/module1/src/callback')},
         say: {
-            hi: async (name, age) => {require('/MyNodeJS/zooms/examples/module1/src/say/hi')}
+            hi: async function(name, age){require('/MyNodeJS/zooms/examples/module1/src/say/hi')}
         }
     },
     m2: {
-        about: async () => {require('/MyNodeJS/zooms/examples/module2/src/about')}
+        about: async function(){require('/MyNodeJS/zooms/examples/module2/src/about')}
     }
 };
 
