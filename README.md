@@ -146,9 +146,8 @@ module.exports = {
     functionList: {
 
         // If it is true, the function list will be compact like below right.
-        // You should to always use "await" keyword to call these functions.
         //         m1: {                                        m1: {
-        //            hi: async function(name, age) {}    =>         hi(name, age) {}
+        //            hi: function(name, age) {}    =>              hi(name, age) {}
         //         }                                            }
         isCompact: false,
 
