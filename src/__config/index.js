@@ -16,7 +16,7 @@ const me = {
 
 	functionList: {
 
-		// If it is true, the function list in file "zooms/services.js" will be compact like below right.
+		// If it is true, the function list in file "zooms/modules.js" will be compact like below right.
 		// 		s1: {										s1: {
 		//			hi: async function(name, age) {}	=> 		hi(name, age) {}
 		// 		}											}
