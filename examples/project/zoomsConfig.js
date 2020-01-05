@@ -28,6 +28,9 @@ const me = {
 
 		// The useArrowFunction is true only takes effect when isCompact is false
 		useArrowFunction: false,
+
+		// The relative path is works in VS Code and not works in WebStorm.
+		useRelativePath: false,
 	},
 };
 
