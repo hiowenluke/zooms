@@ -18,5 +18,13 @@
     "chai": "^4.2.0",
     "lodash": "^4.17.15",
     "mocha": "^7.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiowenluke/zooms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hiowenluke/zooms/issues"
+  },
+  "homepage": "https://github.com/hiowenluke/zooms#readme"
 }
