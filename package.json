@@ -6,10 +6,6 @@
   "scripts": {
     "test": "cd test && mocha . --exit"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://git.ycz123.com:3000/eagle-power-aha/epservices.git"
-  },
   "keywords": [],
   "author": "hi.owen.luke@gmail.com",
   "license": "MIT",
