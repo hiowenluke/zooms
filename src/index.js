@@ -78,13 +78,18 @@ const initSources = (clientRoot, userConfig) => {
 		let modulePath = options.path;
 		let libName = options.lib;
 
+		let absoluteModulePath = modulePath;
+
 		// Convert relative path to absolute path
-		if (modulePath.substr(0, 1) === '.') {
-			modulePath = path.resolve(clientRoot, modulePath);
+		if (absoluteModulePath.substr(0, 1) === '.') {
+			absoluteModulePath = path.resolve(clientRoot, absoluteModulePath);
 		}
 
-		const libPath = modulePath + (libName ? '/' + libName : '');
-		const source = kdo(libPath);
+		const modulePathX = userConfig.functionList.useRelativePath ? options.path : absoluteModulePath;
+		const libPath = modulePathX + (libName ? '/' + libName : '');
+
+		const absoluteLibPath = absoluteModulePath + (libName ? '/' + libName : '');
+		const source = kdo(absoluteLibPath);
 
 		const apis = keyPaths.toPaths(source);
 		const fnParamsStr = {};
