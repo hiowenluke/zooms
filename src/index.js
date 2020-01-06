@@ -9,6 +9,9 @@ const removeRedundantTabs = require('removeredundanttabs');
 const config = require('./__config');
 const lib = require('./__lib');
 
+const zoomsRoot = path.resolve(__dirname, '..');
+const modulesJs = zoomsRoot + '/modules.js';
+
 let sources = {};
 let runtimeApis = {};
 let isInitialized;
@@ -77,18 +80,13 @@ const initSources = (clientRoot, userConfig) => {
 		let modulePath = options.path;
 		let libName = options.lib;
 
-		let absoluteModulePath = modulePath;
-
 		// Convert relative path to absolute path
-		if (absoluteModulePath.substr(0, 1) === '.') {
-			absoluteModulePath = path.resolve(clientRoot, absoluteModulePath);
+		if (modulePath.substr(0, 1) === '.') {
+			modulePath = path.resolve(clientRoot, modulePath);
 		}
 
-		const modulePathX = userConfig.functionList.useRelativePath ? options.path : absoluteModulePath;
-		const libPath = modulePathX + (libName ? '/' + libName : '');
-
-		const absoluteLibPath = absoluteModulePath + (libName ? '/' + libName : '');
-		const source = kdo(absoluteLibPath);
+		const libPath = modulePath + (libName ? '/' + libName : '');
+		const source = kdo(libPath);
 
 		const apis = keyPaths.toPaths(source);
 		const fnParamsStr = {};
@@ -99,7 +97,17 @@ const initSources = (clientRoot, userConfig) => {
 			const fn = keyPaths.get(source, api);
 			fnParamsStr[api] = lib.retrieveParamsStr(fn);
 			fnAsync[api] = fn.constructor.name === 'AsyncFunction';
-			fnPath[api] = libPath + '/' + api.replace(/\./g, '/') + '.js';
+
+			// Convert absolute path to relative path of zoomsRoot
+			let filePath = libPath + '/' + api.replace(/\./g, '/') + '.js';
+			filePath = path.relative(zoomsRoot, filePath);
+
+			// "examples/module1" => "./examples/module1"
+			if (filePath.substr(0, 1) !== '.') {
+				filePath = './' + filePath;
+			}
+
+			fnPath[api] = filePath;
 		});
 
 		sources[name] = {apis, fnParamsStr, fnAsync, fnPath};
@@ -116,7 +124,7 @@ const parseSourcesApis = (userConfig) => {
 			const filePath = fnPath[apiPath];
 
 			// "^^async function () {}^^"
-			return `^^${asyncStr}function(${paramsStr}){require('${filePath}')}^^`;
+			return `^^${asyncStr}function(${paramsStr}) {require('${filePath}')}^^`;
 		};
 
 		const attachFunctionBodyStr = (obj, parent = '') => {
@@ -154,27 +162,29 @@ const parseSourcesApis = (userConfig) => {
 	return data;
 };
 
-const writeToDataFile = (clientRoot, userConfig, apis) => {
+const genApisStr = (options, apis) => {
 	let apisStr = stringify(apis);
 
 	// "^^async function() {}^^" => async function() {}
 	apisStr = apisStr.replace(/("\^\^)|(\^\^")/g, '');
 
 	// hi: async function (name, age) {} => hi(name, age) {}
-	if (userConfig.functionList.isCompact) {
+	if (options.isCompact) {
 		apisStr = apisStr.replace(/\b(\S*?): (async )*function\s*?(?=\()/g, '$2$1')
 	}
 	else {
-		if (userConfig.functionList.useArrowFunction) {
+		if (options.useArrowFunction) {
 			apisStr = apisStr
 				.replace(/function/g, '')
-				.replace(/\){require/g, ') => {require')
+				.replace(/\) {require/g, ') => {require')
 			;
 		}
 	}
 
-	// For zooms/modules.js
-	const modulesFilePath = path.resolve(__dirname, '../modules.js');
+	return apisStr;
+};
+
+const genContentForZoomsModulesJs = (apisStr) => {
 	let content = `
 		const apis = ${apisStr};
 		
@@ -187,24 +197,40 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 	// Beautify line require
 	const lines = content.split('\n');
 	const newLines = lines.map(line => {
-		let indent = line.match(/(\t\t[^}]\t*?)/);
+		let indent = line.match(/(\t\t\t*?)\b([\s\S]+?(?=\())/);
 		if (!indent) return line;
-		indent = indent[0].replace(/\S*$/, '');
+
+		indent = indent[0].replace(/\b[\s\S]*$/, '');
 
 		return line
 			.replace(/^(\t+?)\b([\s\S]*?){require\(/, '$1$2{\n$1\trequire(')
-			.replace(/}([,]*)$/, '\n' + indent + '}$1')
-		;
+			.replace(/}([,]*)$/, '\n' + indent + '}$1\n')
+			;
 	});
 	content = newLines.join('\n');
 
-	lib.replaceInFile(modulesFilePath, /^[\s\S]*module\.exports = apis;/, content);
+	content = content
+		.replace(/^/, '\n')
+		.replace(/}\n\n(\t+?)}/g, '}\n$1}')
+		.replace(/}(,*)(\s*?)},/g, '}$1$2},\n')
+	;
 
-	// Create zoomsServices.js for user to view all apis information.
-	if (userConfig.yesZoomsServicesFile) {
-		const sourceFile = modulesFilePath;
-		const targetFile = clientRoot + '/zoomsServices.js';
-		fs.copyFileSync(sourceFile, targetFile);
+	return content;
+};
+
+const writeToDataFile = (clientRoot, userConfig, apis) => {
+	const apisStr = genApisStr(userConfig.functionList, apis);
+
+	// For zooms/modules.js
+	const content = genContentForZoomsModulesJs(apisStr);
+
+	// Output to file modulesFilePath
+	lib.replaceInFile(modulesJs, /^[\s\S]*module\.exports = apis;/, content);
+
+	// Create zoomsModules.js for user to view all apis information.
+	if (userConfig.yesZoomsModulesFile) {
+		const targetFile = clientRoot + '/zoomsModules.js';
+		fs.copyFileSync(modulesJs, targetFile);
 
 		// Remove the below code at the end of the file:
 		// 		(() => {module.exports = require('./src').do(module.parent.filename)})();
@@ -217,7 +243,6 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 const me = {
 	do(parentFilename) {
 		if (!isInitialized) {
-			debugger;
 			const clientRoot = getClientRoot(parentFilename);
 			const userConfig = getUserConfig(clientRoot);
 
@@ -231,8 +256,8 @@ const me = {
 	once(clientRoot, userConfig) {
 		initSources(clientRoot, userConfig);
 
-		const servicesApis = parseSourcesApis(userConfig);
-		writeToDataFile(clientRoot, userConfig, servicesApis);
+		const apis = parseSourcesApis(userConfig);
+		writeToDataFile(clientRoot, userConfig, apis);
 	}
 };
 
