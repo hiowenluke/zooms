@@ -1,7 +1,7 @@
 
 # Zooms
 
-A module management tools for [Node.js](https://nodejs.org), easily reference external modules from any location, so that the code editors (such as VS Code and WebStorm) can correctly handles the reference (including navigation and document lookup) without TypeScript community stubs (TypeScript definition files).
+A module management tools for [Node.js](https://nodejs.org), easily reference external modules from any location, the code editors (such as VS Code and WebStorm) can correctly handles the reference (including navigation and document lookup) without TypeScript community stubs (TypeScript definition files).
 
 Zooms is used to load modules on the same machine. If you want to load modules which are on different machines, you need to use the RPC framework, and [Booms](https://github.com/hiowenluke/booms) is recommended. 
 
@@ -46,19 +46,27 @@ The "[example/project](./examples/project)" loads the list of functions definiti
 const {m1} = require('zooms/modules');
 ```
 
-Click above "[zooms/modules.js](./modules.js)" in your code editor (such as VS Code or WebStorm) to view it:
+Click above "[zooms/modules.js](./modules.js)" in your code editor to view it. Note that the require here is just to provide a file link for the code editor, not for runtime.
 
 ```js
 const apis = {
     m1: {
-        about: function(){require('/MyNodeJS/zooms/examples/module1/src/about')},
-        callback: function(hi, cb){require('/MyNodeJS/zooms/examples/module1/src/callback')},
+        about: function(){
+            require('/MyNodeJS/zooms/examples/module1/src/about.js')
+        },
+        callback: function(hi, cb){
+            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+        },
         say: {
-            hi: async function(name, age){require('/MyNodeJS/zooms/examples/module1/src/say/hi')}
+            hi: async function(name, age){
+                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+            }
         }
     },
     m2: {
-        about: async function(){require('/MyNodeJS/zooms/examples/module2/src/about')}
+        about: async function(){
+            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+        }
     }
 };
 ...
@@ -69,14 +77,22 @@ Or with arrow functions like below:
 ```js
 const apis = {
     m1: {
-        about: () => {require('/MyNodeJS/zooms/examples/module1/src/about')},
-        callback: (hi, cb) => {require('/MyNodeJS/zooms/examples/module1/src/callback')},
+        about: () => {
+            require('/MyNodeJS/zooms/examples/module1/src/about.js')
+           },
+        callback: (hi, cb) => {
+            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+        },
         say: {
-            hi: async (name, age) => {require('/MyNodeJS/zooms/examples/module1/src/say/hi')}
+            hi: async (name, age) => {
+                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+            }
         }
     },
     m2: {
-        about: async () => {require('/MyNodeJS/zooms/examples/module2/src/about')}
+        about: async () => {
+            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+        }
     }
 };
 ...
@@ -87,14 +103,22 @@ Or with compact mode like below:
 ```js
 const apis = {
     m1: {
-        about(){require('/MyNodeJS/zooms/examples/module1/src/about')},
-        callback(hi, cb){require('/MyNodeJS/zooms/examples/module1/src/callback')},
+        about(){
+            require('/MyNodeJS/zooms/examples/module1/src/about.js')
+        },
+        callback(hi, cb){
+            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+        },
         say: {
-            async hi(name, age){require('/MyNodeJS/zooms/examples/module1/src/say/hi')}
+            async hi(name, age){
+                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+            }
         }
     },
     m2: {
-        async about(){require('/MyNodeJS/zooms/examples/module2/src/about')}
+        async about(){
+            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+        }
     }
 };
 ...
@@ -105,14 +129,22 @@ Or with relative path like below (works in VS Code, not works in WebStorm):
 ```js
 const apis = {
     m1: {
-        about(){require('../module1/src/about')},
-        callback(hi, cb){require('../module1/src/callback')},
+        about(){
+            require('../module1/src/about.js')
+        },
+        callback(hi, cb){
+            require('../module1/src/callback.js')
+        },
         say: {
-            async hi(name, age){require('../module1/src/say/hi')}
+            async hi(name, age){
+                require('../module1/src/say/hi.js')
+            }
         }
     },
     m2: {
-        async about(){require('../module2/src/about')}
+        async about(){
+            require('../module2/src/about.js')
+        }
     }
 };
 ...
