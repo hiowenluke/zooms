@@ -23,11 +23,14 @@ const me = {
 		// 		s1: {										s1: {
 		//			hi: function(name, age) {}	=> 				hi(name, age) {}
 		// 		}											}
-		isCompact: false,
+		isCompact: false, // default
 
 		// The useArrowFunction is true only takes effect when isCompact is false
-		useArrowFunction: false,
+		useArrowFunction: false, // default
 	},
+
+	// Run index.js in the root directory of the modules
+	isRunModuleIndexJs: true, // default
 };
 
 module.exports = me;
