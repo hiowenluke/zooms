@@ -75,7 +75,7 @@ const apis = {
 ...
 ```
 
-Or with arrow functions like below:
+With arrow functions:
 
 ```js
 const apis = {
@@ -104,36 +104,7 @@ const apis = {
 ...
 ```
 
-Or with compact mode like below: 
-
-```js
-const apis = {
-    m1: {
-        about(){
-            require('./examples/module1/src/about.js')
-        },
-        
-        callback(hi, cb){
-            require('./examples/module1/src/callback.js')
-        },
-        
-        say: {
-            async hi(name, age){
-                require('./examples/module1/src/say/hi.js')
-            }
-        }
-    },
-    
-    m2: {
-        async about(){
-            require('./examples/module2/src/about.js')
-        }
-    }
-};
-...
-```
-
-Or with relative path like below (works in VS Code, not works in WebStorm):
+With compact mode:
 
 ```js
 const apis = {
