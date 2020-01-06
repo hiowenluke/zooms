@@ -1,5 +1,4 @@
 
-// This file can be omitted if the following options are all the default value.
 // This file can be a hidden file ".zoomsConfig.js"
 
 const me = {
