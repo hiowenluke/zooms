@@ -170,8 +170,8 @@ module.exports = {
         useArrowFunction: false, // default
     },
 
-	// Run index.js in the root directory of the modules
-	isRunModuleIndexJs: true, // default
+    // Run index.js in the root directory of the modules
+    isRunModuleIndexJs: true, // default
 };
 ```
 
