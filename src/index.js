@@ -82,20 +82,20 @@ const initSources = (clientRoot, userConfig) => {
 		}
 
 		const libPath = modulePath + (libName ? '/' + libName : '');
+		const source = kdo(libPath);
 
-		// Load the entire module to perform the code in index.js
-		const source = kdo(modulePath);
+		// Run index.js in the root directory of the modules
+		if (userConfig.isRunModuleIndexJs) {
+			require(modulePath);
+		}
 
-		// Load the sub-directory lib to get the functions definition
-		const libSource = libName ? source[libName] : source;
-
-		const apis = keyPaths.toPaths(libSource);
+		const apis = keyPaths.toPaths(source);
 		const fnParamsStr = {};
 		const fnAsync = {};
 		const fnPath = {};
 
 		apis.forEach(api => {
-			const fn = keyPaths.get(libSource, api);
+			const fn = keyPaths.get(source, api);
 			fnParamsStr[api] = lib.retrieveParamsStr(fn);
 			fnAsync[api] = fn.constructor.name === 'AsyncFunction';
 
@@ -104,7 +104,8 @@ const initSources = (clientRoot, userConfig) => {
 			filePath = path.relative(zoomsRoot, filePath);
 
 			// "examples/module1" => "./examples/module1"
-			if (filePath.substr(0, 1) !== '.') {
+			const fc = filePath.substr(0, 1);
+			if (fc !== '.' && fc !== '/') {
 				filePath = './' + filePath;
 			}
 
@@ -112,7 +113,7 @@ const initSources = (clientRoot, userConfig) => {
 		});
 
 		sources[name] = {apis, fnParamsStr, fnAsync, fnPath};
-		runtimeApis[name] = libSource;
+		runtimeApis[name] = source;
 	});
 };
 
