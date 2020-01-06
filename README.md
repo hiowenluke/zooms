@@ -52,20 +52,23 @@ Click above "[zooms/modules.js](./modules.js)" in your code editor to view it. N
 const apis = {
     m1: {
         about: function(){
-            require('/MyNodeJS/zooms/examples/module1/src/about.js')
+            require('./examples/module1/src/about.js')
         },
+        
         callback: function(hi, cb){
-            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+            require('./examples/module1/src/callback.js')
         },
+        
         say: {
             hi: async function(name, age){
-                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+                require('./examples/module1/src/say/hi.js')
             }
         }
     },
+    
     m2: {
         about: async function(){
-            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+            require('./examples/module2/src/about.js')
         }
     }
 };
@@ -78,20 +81,23 @@ Or with arrow functions like below:
 const apis = {
     m1: {
         about: () => {
-            require('/MyNodeJS/zooms/examples/module1/src/about.js')
-           },
-        callback: (hi, cb) => {
-            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+            require('./examples/module1/src/about.js')
         },
+        
+        callback: (hi, cb) => {
+            require('./examples/module1/src/callback.js')
+        },
+        
         say: {
             hi: async (name, age) => {
-                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+                require('./examples/module1/src/say/hi.js')
             }
         }
     },
+    
     m2: {
         about: async () => {
-            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+            require('./examples/module2/src/about.js')
         }
     }
 };
@@ -104,20 +110,23 @@ Or with compact mode like below:
 const apis = {
     m1: {
         about(){
-            require('/MyNodeJS/zooms/examples/module1/src/about.js')
+            require('./examples/module1/src/about.js')
         },
+        
         callback(hi, cb){
-            require('/MyNodeJS/zooms/examples/module1/src/callback.js')
+            require('./examples/module1/src/callback.js')
         },
+        
         say: {
             async hi(name, age){
-                require('/MyNodeJS/zooms/examples/module1/src/say/hi.js')
+                require('./examples/module1/src/say/hi.js')
             }
         }
     },
+    
     m2: {
         async about(){
-            require('/MyNodeJS/zooms/examples/module2/src/about.js')
+            require('./examples/module2/src/about.js')
         }
     }
 };
@@ -130,20 +139,23 @@ Or with relative path like below (works in VS Code, not works in WebStorm):
 const apis = {
     m1: {
         about(){
-            require('../module1/src/about.js')
+            require('./examples/module1/src/about.js')
         },
+        
         callback(hi, cb){
-            require('../module1/src/callback.js')
+            require('./examples/module1/src/callback.js')
         },
+        
         say: {
             async hi(name, age){
-                require('../module1/src/say/hi.js')
+                require('./examples/module1/src/say/hi.js')
             }
         }
     },
+    
     m2: {
         async about(){
-            require('../module2/src/about.js')
+            require('./examples/module2/src/about.js')
         }
     }
 };
@@ -185,9 +197,6 @@ module.exports = {
 
         // The useArrowFunction is true only takes effect when isCompact is false
         useArrowFunction: true,
-
-        // The relative path is works in VS Code and not works in WebStorm.
-        useRelativePath: false,
     },
 
 };
