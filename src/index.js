@@ -1,11 +1,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const cp = require('child_process');
 
 const kdo = require('kdo');
 const keyPaths = require('keypaths');
-const clear = require('removeredundanttabs');
+const removeRedundantTabs = require('removeredundanttabs');
 
 const config = require('./__config');
 const lib = require('./__lib');
@@ -100,7 +99,7 @@ const initSources = (clientRoot, userConfig) => {
 			const fn = keyPaths.get(source, api);
 			fnParamsStr[api] = lib.retrieveParamsStr(fn);
 			fnAsync[api] = fn.constructor.name === 'AsyncFunction';
-			fnPath[api] = libPath + '/' + api.replace(/\./g, '/');
+			fnPath[api] = libPath + '/' + api.replace(/\./g, '/') + '.js';
 		});
 
 		sources[name] = {apis, fnParamsStr, fnAsync, fnPath};
@@ -176,12 +175,30 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 
 	// For zooms/modules.js
 	const modulesFilePath = path.resolve(__dirname, '../modules.js');
-	const content = `
+	let content = `
 		const apis = ${apisStr};
 		
 		module.exports = apis;
 	`;
-	lib.replaceInFile(modulesFilePath, /^[\s\S]*module\.exports = apis;/, clear(content));
+
+	content = removeRedundantTabs(content, true);
+	content = content.replace(/ {4}/g, '\t');
+
+	// Beautify line require
+	const lines = content.split('\n');
+	const newLines = lines.map(line => {
+		let indent = line.match(/(\t\t[^}]\t*?)/);
+		if (!indent) return line;
+		indent = indent[0].replace(/\S*$/, '');
+
+		return line
+			.replace(/^(\t+?)\b([\s\S]*?){require\(/, '$1$2{\n$1\trequire(')
+			.replace(/}([,]*)$/, '\n' + indent + '}$1')
+		;
+	});
+	content = newLines.join('\n');
+
+	lib.replaceInFile(modulesFilePath, /^[\s\S]*module\.exports = apis;/, content);
 
 	// Create zoomsServices.js for user to view all apis information.
 	if (userConfig.yesZoomsServicesFile) {
@@ -189,6 +206,8 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 		const targetFile = clientRoot + '/zoomsServices.js';
 		fs.copyFileSync(sourceFile, targetFile);
 
+		// Remove the below code at the end of the file:
+		// 		(() => {module.exports = require('./src').do(module.parent.filename)})();
 		const content = fs.readFileSync(targetFile, 'utf-8');
 		const newContent = content.replace(/ \(\(\) =>[\s\S]*$/, '');
 		fs.writeFileSync(targetFile, newContent, 'utf-8');
