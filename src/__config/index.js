@@ -26,6 +26,9 @@ const me = {
 		useArrowFunction: false,
 	},
 
+	// Run index.js in the root directory of the modules
+	isRunModuleIndexJs: true,
+
 	yesZoomsModulesFile: false,
 };
 
