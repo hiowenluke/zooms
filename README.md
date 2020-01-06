@@ -164,12 +164,14 @@ module.exports = {
         //         m1: {                                        m1: {
         //            hi: function(name, age) {}    =>              hi(name, age) {}
         //         }                                            }
-        isCompact: false,
+        isCompact: false, // default
 
         // The useArrowFunction is true only takes effect when isCompact is false
-        useArrowFunction: true,
+        useArrowFunction: false, // default
     },
 
+	// Run index.js in the root directory of the modules
+	isRunModuleIndexJs: true, // default
 };
 ```
 
