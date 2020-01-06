@@ -1,9 +1,9 @@
 
 # Zooms
 
-A module management tools for [Node.js](https://nodejs.org), easily reference external modules from any location, the code editors (such as VS Code and WebStorm) can correctly handles the reference (including navigation and document lookup) without TypeScript community stubs (TypeScript definition files).
+A module management tools for [Node.js](https://nodejs.org), easily reference external modules from any location, and the code editors (such as VS Code and WebStorm) can correctly handles the navigation and document lookup without TypeScript community stubs (TypeScript definition files).
 
-Zooms is used to load modules on the same machine. If you want to load modules which are on different machines, you need to use the RPC framework, and [Booms](https://github.com/hiowenluke/booms) is recommended. 
+Zooms is used to load modules on the same machine. If you want to load modules which are on different machines, you should to use the RPC framework, and [Booms](https://github.com/hiowenluke/booms) is recommended. 
 
 ## Install
 
