@@ -51,23 +51,23 @@ Click above "[zooms/modules.js](./modules.js)" in your code editor to view it. N
 ```js
 const apis = {
     m1: {
-        about: function(){
+        about: function() {
             require('./examples/module1/src/about.js')
         },
         
-        callback: function(hi, cb){
+        callback: function(hi, cb) {
             require('./examples/module1/src/callback.js')
         },
         
         say: {
-            hi: async function(name, age){
+            hi: async function(name, age) {
                 require('./examples/module1/src/say/hi.js')
             }
         }
     },
     
     m2: {
-        about: async function(){
+        about: async function() {
             require('./examples/module2/src/about.js')
         }
     }
@@ -75,7 +75,7 @@ const apis = {
 ...
 ```
 
-With arrow functions:
+With arrow function:
 
 ```js
 const apis = {
@@ -109,23 +109,23 @@ With compact mode:
 ```js
 const apis = {
     m1: {
-        about(){
+        about() {
             require('./examples/module1/src/about.js')
         },
         
-        callback(hi, cb){
+        callback(hi, cb) {
             require('./examples/module1/src/callback.js')
         },
         
         say: {
-            async hi(name, age){
+            async hi(name, age) {
                 require('./examples/module1/src/say/hi.js')
             }
         }
     },
     
     m2: {
-        async about(){
+        async about() {
             require('./examples/module2/src/about.js')
         }
     }
