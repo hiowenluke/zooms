@@ -37,15 +37,11 @@ const getClientRoot = (startingFilename) => {
 	const startingDir = path.resolve(startingFilename, '..');
 	const targetFile =
 		seekFile(startingDir, 'zoomsConfig.js') ||
-		seekFile(startingDir, '.zoomsConfig.js') ||
-		seekFile(startingDir, 'package.json', (filePath) => {
-			const pkg = require(filePath);
-			return pkg.dependencies.zooms;
-		})
+		seekFile(startingDir, '.zoomsConfig.js')
 	;
 
 	if (!targetFile) {
-		throw new Error(`Can not find package.json or zoomsConfig.js in current project root path`);
+		throw new Error(`Can not find zoomsConfig.js in current project root path`);
 	}
 
 	const userRoot = path.resolve(targetFile, '..');
