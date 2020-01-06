@@ -82,15 +82,20 @@ const initSources = (clientRoot, userConfig) => {
 		}
 
 		const libPath = modulePath + (libName ? '/' + libName : '');
-		const source = kdo(libPath);
 
-		const apis = keyPaths.toPaths(source);
+		// Load the entire module to perform the code in index.js
+		const source = kdo(modulePath);
+
+		// Load the sub-directory lib to get the functions definition
+		const libSource = libName ? source[libName] : source;
+
+		const apis = keyPaths.toPaths(libSource);
 		const fnParamsStr = {};
 		const fnAsync = {};
 		const fnPath = {};
 
 		apis.forEach(api => {
-			const fn = keyPaths.get(source, api);
+			const fn = keyPaths.get(libSource, api);
 			fnParamsStr[api] = lib.retrieveParamsStr(fn);
 			fnAsync[api] = fn.constructor.name === 'AsyncFunction';
 
@@ -107,7 +112,7 @@ const initSources = (clientRoot, userConfig) => {
 		});
 
 		sources[name] = {apis, fnParamsStr, fnAsync, fnPath};
-		runtimeApis[name] = source;
+		runtimeApis[name] = libSource;
 	});
 };
 
