@@ -242,25 +242,56 @@ const writeToDataFile = (clientRoot, userConfig, apis) => {
 	}
 };
 
-const me = {
-	do(parentFilename) {
-		if (!isInitialized) {
-			const clientRoot = getClientRoot(parentFilename);
-			const userConfig = getUserConfig(clientRoot);
-
-			this.once(clientRoot, userConfig);
-			isInitialized = 1;
-		}
-
-		return runtimeApis;
-	},
-
-	once(clientRoot, userConfig) {
+const loadModules = (parentFilename) => {
+	if (!isInitialized) {
+		const clientRoot = getClientRoot(parentFilename);
+		const userConfig = getUserConfig(clientRoot);
 		initSources(clientRoot, userConfig);
 
 		const apis = parseSourcesApis(userConfig);
 		writeToDataFile(clientRoot, userConfig, apis);
+
+		isInitialized = 1;
 	}
+
+	return runtimeApis;
 };
 
-module.exports = me;
+const fn = (parentFilename, relativePath) => {
+	const c = relativePath.substr(0, 1);
+
+	const clientRoot = getClientRoot(parentFilename);
+	const userConfig = getUserConfig(clientRoot);
+
+	let libName;
+
+	// It is a path
+	if (c === '.' || c === '/') {
+		const options = userConfig.modules.find(options => options.path === relativePath);
+		libName = options ? options.lib : '';
+	}
+	else {
+		// It is a name of relative path
+		const name = relativePath;
+		const options = userConfig.modules.find(options => options.name === name);
+		if (!options) {
+			throw new Error(`Can not find "${name}" in zoomsConfig.js`);
+		}
+
+		relativePath = options.path;
+		libName = options.lib;
+	}
+
+	const dir = path.resolve(clientRoot, relativePath);
+	const lib = kdo(dir + (libName ? '/' + libName : ''));
+
+	// create api function list
+	setTimeout(() => {
+		loadModules(parentFilename);
+	}, 1000);
+
+	return lib;
+};
+
+fn.loadModules = loadModules;
+module.exports = fn;
