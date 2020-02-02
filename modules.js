@@ -23,4 +23,4 @@ const apis = {
 	}
 };
 
-module.exports = apis; (() => {module.exports = require('./src').do(module.parent.filename)})();
+module.exports = apis; (() => {module.exports = require('./src').loadModules(module.parent.filename)})();
