@@ -258,14 +258,13 @@ const loadModules = (parentFilename) => {
 };
 
 const fn = (parentFilename, relativePath) => {
-	const c = relativePath.substr(0, 1);
-
 	const clientRoot = getClientRoot(parentFilename);
 	const userConfig = getUserConfig(clientRoot);
 
 	let libName;
 
 	// It is a path
+	const c = relativePath.substr(0, 1);
 	if (c === '.' || c === '/') {
 		const options = userConfig.modules.find(options => options.path === relativePath);
 		libName = options ? options.lib : '';
@@ -273,6 +272,7 @@ const fn = (parentFilename, relativePath) => {
 	else {
 		// It is a name of relative path
 		const name = relativePath;
+
 		const options = userConfig.modules.find(options => options.name === name);
 		if (!options) {
 			throw new Error(`Can not find "${name}" in zoomsConfig.js`);
@@ -283,7 +283,8 @@ const fn = (parentFilename, relativePath) => {
 	}
 
 	const dir = path.resolve(clientRoot, relativePath);
-	const lib = kdo(dir + (libName ? '/' + libName : ''));
+	const libPath = dir + (libName ? '/' + libName : '');
+	const lib = kdo(libPath);
 
 	// create api function list
 	setTimeout(() => {
