@@ -6,7 +6,9 @@
   "scripts": {
     "test": "cd test && mocha . --exit"
   },
-  "keywords": [],
+  "keywords": [
+    "module management"
+  ],
   "author": "hi.owen.luke@gmail.com",
   "license": "MIT",
   "dependencies": {
